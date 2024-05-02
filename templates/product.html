@@ -1,0 +1,67 @@
+{% extends 'base.html' %} {% block content %}
+
+<div style="min-height: 85vh; padding:2em 3em;">
+  <div class="container ">
+    <div class="row">
+        <div class="col-md-6">
+            <!-- Image Gallery -->
+            <img src="{{ member[4] }}" class="img-fluid" alt="">
+        </div>
+        <div class="col-md-6">
+            <!-- Product Details -->
+            <h1>{{ member[1] }}</h1>
+            <p>{{ member[2] }}</p>
+            <h2>£{{ member[3] }}</h2>
+            <!-- Payment Options -->
+            <p><strong>Available payment plans:</strong></p>
+            <ul>
+                <li>Pay in full</li>
+                <li>4 installments of £{{ member[3] / 4 }}</li>
+                <li>6 installments of £{{ member[3] / 6 }}</li>
+            </ul>
+            <!-- Quantity and Add to Cart -->
+            
+            {% if not session['logged_out'] %}
+              <form action="{{ url_for('addtobasket', user_id=session['user_id'], product_id=member[0]) }}" method="post">
+                <div class="mb-3">
+                    <label for="quantity" class="form-label">Quantity</label>
+        
+                        <input type="number" id="quantity" name="quantity" class="form-control" value="1" min="1">
+                        
+                </div>
+                <button type="submit" class="btn btn-outline-secondary">Add to Basket</button>
+             </form>
+          
+              {% else %}
+              <form >
+                <div class="mb-3">
+                    <label for="quantity" class="form-label">Quantity</label>
+        
+                        <input type="number" id="quantity" name="quantity" class="form-control" value="1" min="1">
+                        
+                </div>
+                <button type="submit" class="btn btn-outline-secondary">Add to Basket</button>
+             </form>
+            
+              {% endif %}
+              {% if not session['logged_out'] %}
+              <a
+                class="btn btn-outline"
+                href="{{ url_for('addtofavorites', user_id=session["user_id"], product_id=member[0]) }}"
+                ><i class="fa fa-heart" aria-hidden="true" style="color: black;"></i></a
+              >
+              {% else %}
+              <a
+                class="btn btn-outline"
+                
+                ><i class="fa fa-heart" aria-hidden="true" style="color: black;"></i></a
+              >
+              {% endif %}
+            
+        </div>
+    </div>
+</div>
+
+</div>
+
+{% endblock content%}

@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="container mt-3" style="min-height: 85vh;">
+    {% if basketItems %}
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Product</th>
+                <th class="favoritName">Name</th>
+                <th>Quantity</th>
+                <th>Price</th>
+                <th class="favoritSubtotal">Subtotal</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in basketItems %}
+            <tr>
+                <td><a href="{{ url_for('product', member_id=item[5]) }}" ><img src="{{ item[4] }}" class="img-fluid" style="width: 100px;"/></a></td>
+                <td class="favoritName">{{ item[0] }}</td>
+                <td>
+                    <form action="{{ url_for('update_basket', user_id=session['user_id'], product_id=item[5]) }}" method="post">
+                        <input type="hidden" name="action" value="update">
+                       
+                        <input type="number" id="quantity" name="quantity" value="{{ item[2] }}" min="1" class="form-control" style="display: inline-block; width: auto;">
+                      
+                        <button type="submit" class="btn btn-outline-secondary">Update</button>
+                    </form>
+                </td>
+                <td>£{{ item[3] }}</td>
+                <td class="favoritSubtotal">£{{ item[2] * item[3] }}</td>
+                <td>
+                    <form action="{{ url_for('update_basket', user_id=session['user_id'], product_id=item[5]) }}" method="post">
+                        <input type="hidden" name="action" value="remove">
+                        <button type="submit" class="btn btn-outline-secondary">Remove</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+            <tr>
+                <td colspan="5" class="text-end"><strong>Total</strong></td>
+                <td>£{{ total_price }}</td>
+            </tr>
+        </tbody>
+    </table>
+    <div class="d-grid gap-2">
+        <a href="{{ url_for('checkout', user_id=session['user_id']) }}" class="btn btn-outline-secondary">Proceed to Checkout</a>
+    </div>
+    {% else %}
+    <div class="btn btn-outline-secondary" style="width:100%">Your basket is empty.</div>
+    {% endif %}
+</div>
+
+
+{% endblock content %}

@@ -1,0 +1,147 @@
+/*
+  1. Use a more-intuitive box-sizing model.
+*/
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+/*
+  2. Remove default margin
+  - We added padding: 0 ourselves to remove unwanted padding (e.g. from lists)
+*/
+* {
+  margin: 0;
+  padding: 0;
+}
+/*
+  3. Allow percentage-based heights in the application
+*/
+html,
+body {
+  height: 100%;
+}
+/*
+  Typographic tweaks!
+  4. Add accessible line-height
+  5. Improve text rendering
+*/
+body {
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+/*
+  6. Improve media defaults
+*/
+img,
+picture,
+video,
+canvas,
+svg {
+  display: block;
+  max-width: 100%;
+}
+/*
+  7. Remove built-in form typography styles
+*/
+input,
+button,
+textarea,
+select {
+  font: inherit;
+}
+/*
+  8. Avoid text overflows
+*/
+p,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  overflow-wrap: break-word;
+}
+
+.updateVideo{
+  overflow: hidden;
+  position: absolute;
+  min-width: 0;
+  width: 100%;
+  /* top: 3%;
+  bottom: 3%; */
+  height: 100%;
+  object-fit: cover;
+  filter: blur(5px) brightness(80%);
+  z-index: -10;
+}
+
+.containVideo {
+  position: relative;
+  overflow: hidden;
+  background-color: #0000002e;
+}
+/* header {
+  background-color: #333;
+}
+footer {
+  background-color: #333;
+  height: 100%;
+} */
+
+.imageBrandNavbar{
+  width: 50px;
+  height: 50px;
+  margin-right:3em;
+}
+
+#navbarContain{
+  width: 100vw;
+  padding: 0 5em;
+}
+
+#navbarFooter{
+  padding-left: 5em;
+  height: 7vh;
+}
+.imageBasket{
+  width: 70px;
+  height: 70px;
+}
+div{
+  box-sizing: border-box;
+}
+
+.product-image {
+  max-width: 100%;
+  height: auto;
+}
+
+.imageBrand {
+  height: 100px;  /* Adjust based on your preference */
+  width: auto;
+}
+
+.card-body {
+  background-color: #f8f9fa;
+  padding: 20px;
+  border-radius: 5px;
+}
+
+.loginContainer{
+  background-image: url("https://images.pexels.com/photos/1193743/pexels-photo-1193743.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1");
+  background-size: cover;
+}
+.registerContainer{
+  background-image: url("https://images.pexels.com/photos/3311473/pexels-photo-3311473.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1");
+  background-size: cover;
+}
+@media (max-width:515px) {
+  .favoritName{
+    display: none;
+  }
+  .favoritSubtotal{
+    display: none;
+  }
+  
+}

@@ -1,0 +1,43 @@
+{% extends 'base.html' %} {% block content %}
+
+<div style="min-height: 85vh; padding:2em 2em;">
+  <div class="row mx-auto">
+    {% for member in members %}
+    <div class="col-lg-4 col-md-6 col-sm-12 g-1">
+      <div class="card mb-3" style="max-width: 540px; min-width: 350px">
+        <div class="row g-0">
+          <div class="col-md-4 col-sm-12 row-md-12 row-sm-4">
+            <img
+              src={{ member[4] }}
+              class="rounded-start"
+              style="width: 100vw; max-height: 400px"
+              alt="..."
+            />
+          </div>
+          <div class="col-md-8 col-sm-12 row-md-12 row-sm-8" style="
+          background-color: #f8f9fa;">
+            <div class="card-body">
+              <h5 class="card-title">{{ member[1] }}</h5>
+              <p class="card-text">{{ member[2] }}</p>
+              <p class="card-text">
+                <small class="text-body-secondary">£{{ member[3] }}</small>
+              </p>
+
+              <a
+                class="btn btn-outline-secondary"
+                href="{{ url_for('product', member_id=member[0]) }}"
+                >Details</a
+              >
+             
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+
+
+</div>
+  {% endblock content%}
+

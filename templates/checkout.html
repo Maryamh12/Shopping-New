@@ -1,0 +1,22 @@
+{% extends 'base.html' %} {% block content %}
+<div style="min-height: 85vh">
+<div class="container mt-5">
+    <h1 class="mb-4">Checkout</h1>
+    <form action="/checkout" method="post" id="payment-form" class="card p-4">
+        <div class="mb-3">
+            <label for="email" class="form-label">Email Address</label>
+            <input type="email" id="email" name="email" class="form-control" required>
+        </div>
+        
+        <div class="mb-3">
+            <label for="card-element" class="form-label">Credit or debit card</label>
+            <div id="card-element" class="form-control">
+              <!-- A Stripe Element will be inserted here. -->
+            </div>
+        </div>
+
+        <button type="submit" class="btn btn-outline-secondary">Submit Payment</button>
+    </form>
+</div>
+</div>
+{% endblock content%}
