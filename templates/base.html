@@ -60,7 +60,7 @@
                 <a class="nav-link" href="{{url_for('register')}}">Register</a>
               </li>
               {% endif %}
-              {% if not session['logged_out'] %}
+              {% if not session['logged_out']%}
               <li class="nav-item">
                 <a class="nav-link" href="{{url_for('logout')}}">Logout</a></a>
               </li>
