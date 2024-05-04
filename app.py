@@ -186,6 +186,8 @@ def checkout():
 
 
 def base():
+    session['logged_out'] = True
+    session['user_id'] = []
     if 'logged_out' not in session:
         session['logged_out'] = True
     return render_template('base.html',title="Home Page")
