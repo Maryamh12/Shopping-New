@@ -1,21 +1,21 @@
 {% extends 'base.html' %} {% block content %}
 
 <div style="min-height: 85vh; padding:2em 2em;">
-  <div class="row mx-auto">
+  <div class="row mx-auto" id="containerCard">
     {% for member in members %}
-    <div class="col-lg-4 col-md-6 col-sm-12 g-1">
-      <div class="card mb-3" style="max-width: 540px; min-width: 350px">
+    <div  >
+      <div class="card m-2"  style=" min-width: 350px; max-width: 650px;">
         <div class="row g-0">
-          <div class="col-md-4 col-sm-12 row-md-12 row-sm-4">
+          <div class="col-md-4 col-sm-12 row-md-12 row-sm-4" style=" height: 300px">
             <img
               src={{ member[4] }}
               class="rounded-start"
-              style="width: 100vw; max-height: 400px"
+              style="width: 100vw; height: 300px;"
               alt="..."
             />
           </div>
           <div class="col-md-8 col-sm-12 row-md-12 row-sm-8" style="
-          background-color: #f8f9fa;">
+          background-color: #f8f9fa;height: 300px;">
             <div class="card-body">
               <h5 class="card-title">{{ member[1] }}</h5>
               <p class="card-text">{{ member[2] }}</p>
