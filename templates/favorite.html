@@ -2,46 +2,49 @@
 
 <div style="min-height: 85vh">
   <div class="container mt-3">
-    
-    {% if favoritesItems %}
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Product</th>
-                <th>name</th>
-                <th>Price</th>
-                <th></th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for item in favoritesItems %}
-            <tr>
-                <td><a href="{{ url_for('product', member_id=item[4]) }}" ><img src="{{ item[3] }}" class="img-fluid" style="width: 100px;"/></a></td>
-                <td>{{ item[0] }}</td>
-                
-                <td>£{{ item[2] }}</td>
-                <td>
-                    <form action="{{ url_for('update_favorite', user_id=session['user_id'], product_id=item[4]) }}" method="post">
-                        <input type="hidden" name="action" value="update">
-                        <button type="submit" class="btn btn-outline-secondary">Add to basket</button>
-                    </form>
-                </td>
-                <td>
-                    <form action="{{ url_for('update_favorite', user_id=session['user_id'], product_id=item[4]) }}" method="post">
-                        <input type="hidden" name="action" value="remove">
-                        <button type="submit" class="btn btn-outline-secondary">Remove</button>
-                    </form>
-                </td>
-                
-            </tr>
-            {% endfor %}
-           
-        </tbody>
-    </table>
-    
+    {% if username %}
+        {% if favoritesItems %}
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Product</th>
+                    <th>name</th>
+                    <th>Price</th>
+                    <th></th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in favoritesItems %}
+                <tr>
+                    <td><a href="{{ url_for('product', member_id=item[4]) }}" ><img src="{{ item[3] }}" class="img-fluid" style="width: 100px;"/></a></td>
+                    <td>{{ item[0] }}</td>
+                    
+                    <td>£{{ item[2] }}</td>
+                    <td>
+                        <form action="{{ url_for('update_favorite', user_id=session['user_id'], product_id=item[4]) }}" method="post">
+                            <input type="hidden" name="action" value="update">
+                            <button type="submit" class="btn btn-outline-secondary">Add to basket</button>
+                        </form>
+                    </td>
+                    <td>
+                        <form action="{{ url_for('update_favorite', user_id=session['user_id'], product_id=item[4]) }}" method="post">
+                            <input type="hidden" name="action" value="remove">
+                            <button type="submit" class="btn btn-outline-secondary">Remove</button>
+                        </form>
+                    </td>
+                    
+                </tr>
+                {% endfor %}
+            
+            </tbody>
+        </table>
+        
+        {% else %}
+        <div class="alert alert-info">Your basket is empty.</div>
+        {% endif %}
     {% else %}
-    <div class="alert alert-info">Your basket is empty.</div>
+    <div class="btn btn-outline-secondary" style="width:100%">You are not login.</div>
     {% endif %}
 </div>
     </div>

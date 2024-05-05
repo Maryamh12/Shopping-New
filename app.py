@@ -223,35 +223,42 @@ def addtofavorites(user_id, product_id):
 
 @app.route('/basket/<int:user_id>')
 def basket(user_id):
-    if not user_id:
-        return "You are not logged in", 401
-
+    print(user_id)
     try:
         with sql.connect('./productdb.db') as con:
             cur = con.cursor()
-            
-            cur.execute("""
-                SELECT p.name, p.description, b.quantity, p.price , p.image_url, p.id
-                FROM Basket b
-                JOIN Products p ON b.product_id = p.id
-                WHERE b.user_id = ?
-            """, (user_id,))
-            basketItems = cur.fetchall()
+            cur.execute("SELECT username FROM users WHERE user_id = ?", (user_id,))
+            username = cur.fetchone()  # Fetch the stored hash
+            print(username)
+            if not username:
+                 return render_template('basket.html',title="Products Page"  ,basketItems=[],username=username)
+            else:
+                cur.execute("""
+            SELECT p.name, p.description, b.quantity, p.price , p.image_url, p.id
+            FROM Basket b
+            JOIN Products p ON b.product_id = p.id
+            WHERE b.user_id = ?
+        """, (user_id,))
+        basketItems = cur.fetchall()
     except Exception as e:
         return str(e), 500
-    return render_template('basket.html',title="Products Page"  ,basketItems=basketItems)
+
+    return render_template('basket.html',title="Products Page"  ,basketItems=basketItems,username=username)
 
 
 @app.route('/favorite/<int:user_id>')
 def favorite(user_id):
-    if not user_id:
-        return "You are not logged in", 401
-
+    print(user_id)
     try:
         with sql.connect('./productdb.db') as con:
             cur = con.cursor()
-            
-            cur.execute("""
+            cur.execute("SELECT username FROM users WHERE user_id = ?", (user_id,))
+            username = cur.fetchone()  # Fetch the stored hash
+            print(username)
+            if not username:
+                 return render_template('favorite.html',title="Products Page"  ,favoritesItems=[],username=username)
+            else:
+                cur.execute("""
                 SELECT p.name, p.description,  p.price , p.image_url, p.id
                 FROM Favorites f
                 JOIN Products p ON f.product_id = p.id
@@ -260,7 +267,9 @@ def favorite(user_id):
             favoritesItems = cur.fetchall()
     except Exception as e:
         return str(e), 500
-    return render_template('favorite.html',title="Products Page"  ,favoritesItems=favoritesItems)
+
+    return render_template('favorite.html',title="Products Page"  ,favoritesItems=favoritesItems,username=username)
+
 
 @app.route('/product/<int:member_id>')
 def product(member_id):

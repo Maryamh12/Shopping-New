@@ -52,25 +52,47 @@
               <li class="nav-item">
                 <a class="nav-link active" aria-current="page" href="{{url_for('products')}}">Shopping</a>
               </li>
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                  <i class="fa fa-user" aria-hidden="true"></i>
+                </a>
+                <ul class="dropdown-menu">
+                  <li><a class="dropdown-item" href="#">My Account</a></li>
+                  <li><a class="dropdown-item" href="#">My Order</a></li>
+                  <li><hr class="dropdown-divider"></li>
               {% if session['logged_out'] %}
-              <li class="nav-item">
+              <li class="dropdown-item">
                 <a class="nav-link" href="{{url_for('login')}}">Login</a></a>
               </li>
-              <li class="nav-item">
+              <li class="dropdown-item">
                 <a class="nav-link" href="{{url_for('register')}}">Register</a>
               </li>
               {% endif %}
               {% if not session['logged_out']%}
-              <li class="nav-item">
+              <li class="dropdown-item">
                 <a class="nav-link" href="{{url_for('logout')}}">Logout</a></a>
               </li>
-              <li class="nav-item">
-                <a class="nav-link" href="{{url_for('basket' , user_id=session.get('user_id',1 ))}}"><i class="fa fa-shopping-basket" aria-hidden="true"></i></a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="{{url_for('favorite' , user_id=session.get('user_id', 1))}}"><i class="fa fa-heart" aria-hidden="true" style="color: black;"></i></a>
-              </li>
               {% endif %}
+            </ul>
+          </li>
+          {% if not session['logged_out']%}
+              <li class="nav-item">
+                <a class="nav-link" href="{{url_for('basket' , user_id=session['user_id'])}}"><i class="fa fa-shopping-basket" aria-hidden="true"></i></a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="{{url_for('favorite' , user_id=session['user_id'])}}"><i class="fa fa-heart" aria-hidden="true" style="color: black;"></i></a>
+              </li>
+          {% endif %}
+          {% if session['logged_out']%}
+              <li class="nav-item">
+                <a class="nav-link" href="{{url_for('basket' , user_id=0)}}"><i class="fa fa-shopping-basket" aria-hidden="true"></i></a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="{{url_for('favorite' , user_id=0)}}"><i class="fa fa-heart" aria-hidden="true" style="color: black;"></i></a>
+              </li>
+          {% endif %}
+              
+              
             </ul>
           </div>
         </div>
