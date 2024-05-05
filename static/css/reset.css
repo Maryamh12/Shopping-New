@@ -5,6 +5,7 @@
 *::before,
 *::after {
   box-sizing: border-box;
+  --bs-dropdown-link-active-bg:#6c757d;
 }
 /*
   2. Remove default margin
