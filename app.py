@@ -36,7 +36,10 @@ def get_member_by_id(member_id):
             cur = dbCon.cursor()
             cur.execute("SELECT * FROM products WHERE id = ?", (member_id,))
             member = cur.fetchone()
-        return member
+            cur.execute("SELECT * FROM review WHERE product_id = ?", (member_id,))
+            comments = cur.fetchall()
+           
+        return member ,comments
     except sql.Error as e:
         print(f"Error occurred: {e}")
         return None
@@ -116,7 +119,29 @@ def update_basket(user_id, product_id):
             flash(f'An error occurred: {e}', 'error')
     
     return redirect(url_for('basket', user_id=user_id))
-
+ 
+ 
+@app.route('/update_comments/<int:user_id>/<int:product_id>', methods=['POST'])
+def update_comments(user_id, product_id):
+    action = request.form.get('action')
+    if action == 'update':
+        name = request.form.get('name')
+        description = request.form.get('description')
+        print(name)
+        print(description)
+        try:
+            with sql.connect('./productdb.db') as dbCon:
+                cur = dbCon.cursor()
+                # Update the quantity of the product in the basket
+                cur.execute('INSERT INTO review (user_id, product_id, name,description) VALUES (?, ?, ?,?)', (user_id, product_id, name,description))
+                cur.execute("SELECT * FROM review WHERE product_id = ?", (product_id,))
+                comments = cur.fetchall()
+                print(comments)
+                dbCon.commit()
+                flash('review updated successfully.', 'success')
+        except Exception as e:
+            flash(f'An error occurred: {e}', 'error')  
+    return redirect(url_for('product', member_id=product_id))
 
 @app.route('/update-favorite/<int:user_id>/<int:product_id>', methods=['POST'])
 def update_favorite(user_id, product_id):
@@ -273,9 +298,10 @@ def favorite(user_id):
 
 @app.route('/product/<int:member_id>')
 def product(member_id):
-    member = get_member_by_id(member_id)
+    [member , comments] = get_member_by_id(member_id)
+    
     if member:
-        return render_template('product.html',title="Product Page"  ,member=member)
+        return render_template('product.html',title="Product Page"  ,member=member, comments=comments)
     else:
         return "Member not found", 404
     

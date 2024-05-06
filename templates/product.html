@@ -63,5 +63,82 @@
 </div>
 
 </div>
+<div style="position:relative; ">
+    <h4 style="border-bottom:1px solid black; padding:0.5em 1em; margin:20px 3.5em; ">Review</h4>
+    <a onclick="toggleComments();"><img src="https://cdn-icons-png.flaticon.com/128/2961/2961937.png" id="toggleIcon" class="imageBrandNavbar" style="position:absolute; width:20px; height:20px; bottom:0.5em; right:3em;  "/></a>
+</div>
+{% if comments %}
+ 
+  <div id="commentsSection" style="display: none; height:100%; padding:0.5em 1em; margin:20px 4em; transition:1s ease;">
+    {% for comment in comments %}
+        <h6 class="mb-3" >{{ comment[3] }}:</h6>
+        <p style="height:100px; border-bottom:1px solid #d9d9d9; font-size:0.8em;">{{ comment[4] }}</p>
+    {% endfor %} 
+  </div>
 
+  {% if not session['logged_out'] %}
+    <form action="{{ url_for('update_comments', user_id=session['user_id'], product_id=member[0]) }}" method="post" style="padding:0.5em 1em; margin:20px 4em;">
+      <input type="hidden" name="action" value="update">
+
+     
+      <label for="name" class="form-label  mb-2" >Title</label>
+      <input type="text" name="name" class="form-control mb-3" id="name" >
+  
+    
+      <label for="description" class="form-label  mb-2" >Comment</label>
+      <textarea class="form-control mb-3" name="description" id="description" rows="3"></textarea>
+     
+
+      <button type="submit" class="btn btn-outline-secondary">Add Comment</button>
+    </form>
+  {% else %}
+    <form  style="padding:0.5em 1em; margin:20px 4em;">
+      <input type="hidden" name="action" value="update">
+
+     
+      <label for="name" class="form-label  mb-2">Title</label>
+      <input type="text" name="name" class="form-control mb-3" id="name" >
+    
+    
+      <label for="description" class="form-label  mb-2">Comment</label>
+      <textarea class="form-control mb-3" name="description" id="description" rows="3"></textarea>
+      
+
+      <button type="submit" class="btn btn-outline-secondary">Add Comment</button>
+    </form>
+  {% endif %}
+{% else %}
+   {% if not session['logged_out'] %}
+      <form action="{{ url_for('update_comments', user_id=session['user_id'], product_id=member[0]) }}" method="post" style="padding:0.5em 1em; margin:20px 4em;">
+        <input type="hidden" name="action" value="update">
+
+        
+        <label for="name" class="form-label  mb-2">Title</label>
+        <input type="text" name="name" class="form-control mb-3" id="name" >
+    
+      
+        <label for="description" class="form-label  mb-2">Comment</label>
+        <textarea class="form-control mb-3" name="description" id="description" rows="3"></textarea>
+      
+
+        <button type="submit" class="btn btn-outline-secondary">Add Comment</button>
+      </form>
+   {% else %}
+      <form style="padding:0.5em 1em; margin:20px 4em;">
+        <input type="hidden" name="action" value="update">
+
+        
+        <label for="name" class="form-label  mb-2">Title</label>
+        <input type="text" name="name" class="form-control mb-3" id="name" >
+      
+      
+        <label for="description" class="form-label  mb-2">Comment</label>
+        <textarea class="form-control mb-3" name="description" id="description" rows="3"></textarea>
+       
+
+        <button type="submit" class="btn btn-outline-secondary">Add Comment</button>
+      </form>
+    
+    {% endif %}
+{% endif %}
 {% endblock content%}
