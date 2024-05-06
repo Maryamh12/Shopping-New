@@ -320,7 +320,7 @@ def login():
                 cur.execute("SELECT password FROM users WHERE username = ?", (username,))
                 user_pass = cur.fetchone()  # Fetch the stored hash
                 cur.execute("SELECT user_id FROM users WHERE username = ?", (username,))
-                user_id = cur.fetchone()[0]  # Fetch the stored hash
+                user_id = cur.fetchone()[0] 
                 print(f"password: {user_pass}")
                 if user_pass and bcrypt.checkpw(password, user_pass[0]) and user_id :
                     session['logged_out'] = False
