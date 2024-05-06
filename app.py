@@ -14,6 +14,13 @@ app.config['SECRET_KEY'] = 'your_secret_key_here'
 stripe.api_key = 'your_stripe_secret_key_here'
 
 
+def base():
+    session['logged_out'] = True
+    session['user_id'] = 0
+    if 'logged_out' not in session:
+        session['logged_out'] = True
+    return render_template('base.html',title="Home Page")
+
 def get_members():
     try:
         with  sql.connect('./productdb.db') as dbCon: 
@@ -210,12 +217,7 @@ def checkout():
     return render_template('checkout.html', cart=session.get('cart', {}))
 
 
-def base():
-    session['logged_out'] = True
-    session['user_id'] = 1
-    if 'logged_out' not in session:
-        session['logged_out'] = True
-    return render_template('base.html',title="Home Page")
+
 
 @app.route('/')
 def home():
@@ -224,7 +226,7 @@ def home():
 @app.route('/logout')
 def logout():
     session['logged_out'] = True
-    session['user_id'] = 1
+    session['user_id'] = 0
     return redirect(url_for('home'))
 
 @app.route('/products')
