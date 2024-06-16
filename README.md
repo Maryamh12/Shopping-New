@@ -5,8 +5,11 @@ This project is a web application built with Flask for the backend and uses SQLi
 
 ## Deployed Application
 
-View the deployed site here.
+View the deployed site [here](https://shopping-new-fc5cc05d42d1.herokuapp.com/).
 
+## Sign up and create new account or try this demo user:
+- Username: lily@gmail.com
+- Password: Straw1798!
 
 ## Application Visuals
 
