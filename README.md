@@ -11,17 +11,17 @@ View the deployed site here.
 ## Application Visuals
 
 <p align="center">
-  <img src="./Image/Homepage-1.gif" alt="Demo 1" width="400"/>
-  <img src="./Image/Shopingpage.gif" alt="Demo 2" width="400"/>
+  <img src="./Image/Homepage-1.gif" alt="Demo 1" width="400"height="300"/>
+  <img src="./Image/Shopingpage.gif" alt="Demo 2" width="400" height="300"/>
  
 </p>
 <p align="center">
-  <img src="./Image/Basketpage.gif" alt="Demo 1" width="400"/>
-  <img src="./Image/Comment.gif" alt="Demo 3" width="400"/>
+  <img src="./Image/Basketpage.gif" alt="Demo 1" width="400" height="300"/>
+  <img src="./Image/Comment.gif" alt="Demo 3" width="400" height="300"/>
 </p>
 <p align="center">
-  <img src="./Image/Favoritepage.gif" alt="Demo 2" width="400"/>
-  <img src="./Image/Loginpage.gif" alt="Demo 3" width="400"/>
+  <img src="./Image/Favoritepage.gif" alt="Demo 2" width="400" height="300"/>
+  <img src="./Image/Loginpage.gif" alt="Demo 3" width="400"height="300"/>
 </p>
 
 
