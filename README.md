@@ -354,23 +354,221 @@ The product detail page includes a section for customer reviews, allowing users 
 ```
 By implementing these features, the product card component provides a seamless and engaging shopping experience for users, allowing them to easily view product details, add products to their basket or favorites, and read or leave reviews.
 
+#### Basket Page
+The Basket Page is a crucial part of the e-commerce application, providing users with a detailed overview of the products they intend to purchase. This section outlines the various functionalities available on the Basket Page, including updating product quantities, removing items, and proceeding to checkout.
+#### Product Overview
+Each product in the basket is displayed with the following details:
+
+ - #### Image:  
+   A thumbnail image of the product for easy identification.
+ - #### Name:  
+   The name of the product.
+ - #### Quantity:  
+   An input field allowing users to update the quantity of the product.
+ - #### Price:  
+   The price per unit of the product.
+ - #### Subtotal:  
+   The total cost for the quantity selected.
+ - #### Action:  
+   Options to update the quantity or remove the product from the basket.
+ 
+ #### Functionalities
+ 1. #### Updating Product Quantity
+
+ - Users can change the quantity of each product directly from the basket. and content.
+ - The "Update" button next to the quantity input field triggers the update process.
+ - Upon clicking "Update", the subtotal and total price are recalculated to reflect the changes.
+
+```javascript
+
+@app.route('/update-basket/<int:user_id>/<int:product_id>', methods=['POST'])
+def update_basket(user_id, product_id):
+    action = request.form.get('action')
+    if action == 'update':
+        new_quantity = request.form.get('quantity', type=int)
+        try:
+            with sql.connect('./productdb.db') as dbCon:
+                cur = dbCon.cursor()
+                # Update the quantity of the product in the basket
+                if new_quantity > 0:
+                    cur.execute('UPDATE Basket SET quantity = ? WHERE user_id = ? AND product_id = ?',
+                                (new_quantity, user_id, product_id))
+                    dbCon.commit()
+                    flash('Basket updated successfully.', 'success')
+                else:
+                    flash('Quantity must be at least 1.', 'error')
+        except Exception as e:
+            flash(f'An error occurred: {e}', 'error')
+        
+    elif action == 'remove':
+        try:
+            with sql.connect('./productdb.db') as dbCon:
+                cur = dbCon.cursor()
+                # Remove the product from the basket
+                cur.execute('DELETE FROM Basket WHERE user_id = ? AND product_id = ?',
+                            (user_id, product_id))
+                dbCon.commit()
+                flash('Product removed from basket.', 'success')
+        except Exception as e:
+            flash(f'An error occurred: {e}', 'error')
+    
+    return redirect(url_for('basket', user_id=user_id))
+```
+
+2. #### Removing Items
+
+ - Each product has a "Remove" button to delete the item from the favorites list.
+
+ - Clicking the "Remove" button removes the item from the favorites list.
+
+```javascript
+{% for item in basketItems %}
+                <tr>
+                    <td><a href="{{ url_for('product', member_id=item[5]) }}" ><img src="{{ item[4] }}" class="img-fluid" style="width: 100px;"/></a></td>
+                    <td class="favoritName">{{ item[0] }}</td>
+                    <td>
+                        <form action="{{ url_for('update_basket', user_id=session['user_id'], product_id=item[5]) }}" method="post">
+                            <input type="hidden" name="action" value="update">
+                        
+                            <input type="number" id="quantity" name="quantity" value="{{ item[2] }}" min="1" class="form-control" style="display: inline-block; width: auto;">
+                        
+                            <button type="submit" class="btn btn-outline-secondary">Update</button>
+                        </form>
+                    </td>
+                    <td>£{{ item[3] }}</td>
+                    <td class="favoritSubtotal">£{{ item[2] * item[3] }}</td>
+                    <td>
+                        <form action="{{ url_for('update_basket', user_id=session['user_id'], product_id=item[5]) }}" method="post">
+                            <input type="hidden" name="action" value="remove">
+                            <button type="submit" class="btn btn-outline-secondary">Remove</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+```
+#### Purchasing Process
+
+The purchasing process involves several steps to ensure a smooth transaction for the user. This section outlines the steps involved from adding items to the basket to completing the purchase.
+
+1. #### Adding Items to Basket
+
+ - Users can browse products and add them to their basket using the "Add to Basket" button on the product cards.
+ - Each addition updates the basket and displays the selected items on the Basket Page.
+
+```javascript
+def add_to_basket( user_id, product_id,quantity):
+    try:
+        with sql.connect('./productdb.db') as dbCon: 
+            cur = dbCon.cursor()
+            # Check if the product is already in the basket
+            cur.execute('SELECT quantity FROM Basket WHERE user_id = ? AND product_id = ?', (user_id, product_id))
+            existing = cur.fetchone()
+            
+            if existing:
+                # If the product is already in the basket, increase the quantity by 1
+                new_quantity = existing[0] + quantity
+                cur.execute('UPDATE Basket SET quantity = ? WHERE user_id = ? AND product_id = ?', (new_quantity, user_id, product_id))
+            else:
+                # If the product is not in the basket, insert a new record with quantity 1
+                cur.execute('INSERT INTO Basket (user_id, product_id, quantity) VALUES (?, ?, ?)', (user_id, product_id, quantity))
+                action = 'added to'
+            dbCon.commit()
+        return redirect(url_for('product' , member_id=product_id))
+    except sql.Error as e:
+        print(f"Error occurred: {e}")
+        return None
+
+  ```
+
+2. #### Reviewing Basket
+
+ - The Basket Page provides a detailed overview of the selected products, allowing users to update quantities or remove items as needed.
+
+ - The total cost is dynamically updated based on the user's adjustments.
+
+3. #### Proceeding to Checkout
+
+ - Once the user confirms their selections, they click "Proceed to Checkout".
+
+ - This action redirects the user to the checkout page where they can enter shipping and payment information.
+
+```javascript
+ {% endfor %}
+                <tr>
+                    <td colspan="5" class="text-end"><strong>Total</strong></td>
+                    <td>£{{ total_price }}</td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="d-grid gap-2">
+            <a href="{{ url_for('checkout', user_id=session['user_id']) }}" class="btn btn-outline-secondary">Proceed to Checkout</a>
+        </div>
+        {% else %}
+        <div class="btn btn-outline-secondary" style="width:100%">Your basket is empty.</div>
+        {% endif %}
+    {% else %}
+    <div class="btn btn-outline-secondary" style="width:100%">You are not login.</div>
+    {% endif %}
+  ```
+
+
+4. #### Completing the Purchase
+
+ - On the checkout page, users enter their shipping address and payment details.
+
+ - After confirming the details, users complete the purchase by clicking the "Submit Payment" button.
+
+ - The system processes the payment and provides an order confirmation.
+
+ ```javascript
+
+@app.route('/checkout', methods=['GET', 'POST'])
+def checkout():
+    if request.method == 'POST':
+        # Process payment
+        customer = stripe.Customer.create(
+            email=request.form['email'],
+            source=request.form['stripeToken']  # Obtained with Stripe.js
+        )
+        
+        charge = stripe.Charge.create(
+            customer=customer.id,
+            amount=int(session['total_price'] * 100),  # Total price in cents
+            currency='usd',
+            description='Purchase Description'
+        )
+        
+        # Clear the session cart
+        session['cart'] = {}
+        return render_template('confirmation.html', charge=charge)
+
+    # Display checkout form
+    return render_template('checkout.html', cart=session.get('cart', {}))
+
+  ```
+
+By providing a user-friendly interface and clear functionalities, the application ensures a seamless shopping experience from browsing products to completing a purchase. The detailed information on the Basket Page and Favorite Page enhances user convenience and satisfaction.
 
 ## Wins & challenges
 
 #### Wins: 
 
-- Community Engagement: The project significantly enhanced community engagement by enabling users to share and explore personal travel stories, enriching the platform with diverse experiences and insights.
+- The project significantly enhanced user engagement by providing a platform where users can add products to their favorites and baskets, write reviews, and complete purchases. This interaction not only enriches the user experience but also provides valuable feedback for potential buyers.
 
-- Technical Integration: Technical integrations, including real-time data handling and media uploads, showcased the project's robust backend architecture and contributed to a seamless user experience.
-
-- User Interface Design: The adaptive and responsive design of the application ensured optimal usability across various devices, broadening accessibility and enhancing user interaction.
+- The integration of various technologies such as Flask for the backend, SQLite for database management, and Stripe for payment processing, showcased the project's robust architecture. This combination facilitated seamless data handling and transaction processing, contributing to a smooth user experience.
 
 
 #### challenges:
 
-- Managing state efficiently across multiple React components proved challenging. Using global state management solutions like Redux or Context API was essential to share data and handle asynchronous operations without causing performance issues or inconsistent states.
+- #### Database Management:
+Managing the SQLite database efficiently posed several challenges. Ensuring data integrity, especially with multiple related tables (users, products, baskets, orders, etc.), required meticulous attention to relationships and constraints. Handling simultaneous database access and updates without causing conflicts or data loss was crucial.
 
-- Ensuring secure user authentication and authorization was complex. Implementing JWT for secure token handling, protecting frontend routes, and managing role-based access control to differentiate admin and user permissions added significant complexity.
+- #### User Authentication and Security:
+Implementing secure user authentication and authorization was complex. The use of bcrypt for password hashing and handling session management required careful handling to ensure security. Protecting routes and managing role-based access control to differentiate between regular users and admin roles added significant complexity.
+
+- #### Payment Processing:
+Integrating Stripe for payment processing presented challenges, particularly in securely handling payment information and ensuring compliance with payment security standards. Ensuring a smooth and secure checkout process required thorough testing and error handling.
+
 
 
 #### Key Learnings:
@@ -378,113 +576,79 @@ By implementing these features, the product card component provides a seamless a
 - One key learning was the importance of thorough testing throughout the development process. Implementing unit tests and integration tests early on helped identify bugs and issues before they became major problems. This proactive approach saved time and ensured a more stable and reliable application.
 
 ##### Unit Testing: 
-When developing the city search functionality, I created unit tests for the search function to ensure it correctly filtered cities based on user input.
+For the basket functionality, unit tests were created to ensure that the quantity updates and item removal worked correctly.
 
 ```javascript
 
-    import { searchCities } from './search';
+    def test_update_basket_quantity(self):
+    response = self.client.post(
+        '/update-basket/1/1', 
+        data={'action': 'update', 'quantity': 3},
+        follow_redirects=True
+    )
+    self.assertIn(b'Basket updated successfully.', response.data)
 
-test('filters cities based on search query', () => {
-  const cities = [{ name: 'New York' }, { name: 'Los Angeles' }, { name: 'Chicago' }];
-  const result = searchCities(cities, 'New');
-  expect(result).toEqual([{ name: 'New York' }]);
-});
+    def test_remove_basket_item(self):
+    response = self.client.post(
+        '/update-basket/1/1', 
+        data={'action': 'remove'},
+        follow_redirects=True
+    )
+    self.assertIn(b'Product removed from basket.', response.data)
+
 ```
 ##### Integration Testing:
 
-For the user authentication feature, I wrote integration tests to verify that the  login API endpoint worked correctly with the database and responded with appropriate status codes.
+For the user authentication feature, integration tests were written to verify that the login API endpoint worked correctly with the database and responded with appropriate status codes.
 
 ```javascript
-import request from 'supertest';
-import app from './app';
+def test_login(self):
+    response = self.client.post(
+        '/login', 
+        data={'username': 'testuser', 'password': 'testpassword'},
+        follow_redirects=True
+    )
+    self.assertEqual(response.status_code, 200)
+    self.assertIn(b'Products Page', response.data)
 
-describe('POST /login', () => {
-  it('should login user and return a token', async () => {
-    const response = await request(app)
-      .post('/login')
-      .send({ username: 'testuser', password: 'testpassword' });
-    expect(response.statusCode).toBe(200);
-    expect(response.body).toHaveProperty('token');
-  });
-});
 ```
-- Another significant learning experience was leveraging external libraries and APIs to enhance functionality. Integrating libraries like Axios for HTTP requests and Cloudinary for image uploads streamlined development and added powerful features without reinventing the wheel.
-
 
 #### Future Improvements:
 
-- Code Refactoring and Optimization:
-  To enhance code organization and readability, I aim to refactor and optimize the codebase. Specifically, improving the structure and readability of complex components like CityCard and TourBrowse, and utilizing proper destructuring and modularization techniques. This will make the code more maintainable and easier for other developers to understand and contribute to.
+- A significant future enhancement is to develop a comprehensive user profile feature. This would allow users to create and personalize their profiles, showcasing their purchase history and reviews. Additionally, integrating social features like following other users and commenting on profiles would increase engagement and community interaction.
 
   
 ##### Example:
 
-  - Current Code:
-
-
-```javascript
-
-const CityCard = ({ city }) => {
-  return (
-    <div>
-      <h3>{city.name}</h3>
-      <p>{city.text}</p>
-      <img src={city.image} alt={city.name} />
-    </div>
-  );
-};
-
-```
-
-
-  - Improved Code:
-
-```javascript
-
-  const CityCard = ({ city: { name, text, image } }) => (
-  <div>
-    <h3>{name}</h3>
-    <p>{text}</p>
-    <img src={image} alt={name} />
-  </div>
- );
-
-```
-
-- Enhanced User Profiles:
- A significant future enhancement is to develop a comprehensive user profile feature. This would allow users to create and personalize their profiles, showcasing their travel stories and experiences. Additionally, integrating social features like following other users and commenting on profiles would increase engagement and community interaction.
-
-  ##### Example:
   - Current Code: No user profile feature implemented.
-
 
 
   - Improved Code:
 
   ```javascript
 
-  const UserProfile = () => {
-  // Fetch user data from API
-  const [userData, setUserData] = useState(null);
+  def user_profile(user_id):
+    user = get_user_by_id(user_id)
+    orders = get_orders_by_user(user_id)
+    reviews = get_reviews_by_user(user_id)
+    return render_template('profile.html', user=user, orders=orders, reviews=reviews)
 
-  useEffect(() => {
-    fetchUserData().then(data => setUserData(data));
-  }, []);
+def get_user_by_id(user_id):
+    with sql.connect('./productdb.db') as con:
+        cur = con.cursor()
+        cur.execute("SELECT * FROM users WHERE user_id = ?", (user_id,))
+        return cur.fetchone()
 
-  if (!userData) {
-    return <div>Loading...</div>;
-  }
+def get_orders_by_user(user_id):
+    with sql.connect('./productdb.db') as con:
+        cur = con.cursor()
+        cur.execute("SELECT * FROM orders WHERE user_id = ?", (user_id,))
+        return cur.fetchall()
 
-  return (
-    <div>
-      <h1>{userData.name}</h1>
-      <img src={userData.profileImage} alt={userData.name} />
-      <p>{userData.bio}</p>
-      {/* Additional user details and functionalities */}
-    </div>
-  );};
+def get_reviews_by_user(user_id):
+    with sql.connect('./productdb.db') as con:
+        cur = con.cursor()
+        cur.execute("SELECT * FROM review WHERE user_id = ?", (user_id,))
+        return cur.fetchall()
 
-  export default UserProfile;
-   ```
-
-
+ ```
