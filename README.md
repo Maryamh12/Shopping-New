@@ -29,9 +29,9 @@ View the deployed site here.
 ## Responsive Design
 
 <p >
-  <img src="./Image/Responsive.gif" alt="Demo 1" width="300"/>
-  <img src="./Image/Responsive2.gif" alt="Demo 2" width="300"/>
-  <img src="./Image/Responsive3.gif" alt="Demo 3" width="300"/>
+  <img src="./Image/Responsive.gif" alt="Demo 1" width="280"/>
+  <img src="./Image/Responsive2.gif" alt="Demo 2" width="280"/>
+  <img src="./Image/Responsive3.gif" alt="Demo 3" width="280"/>
 </p>
 
 
